@@ -1,3 +1,3 @@
-                    // temp=arr2[l_r];
-                    // arr2[l_r]=arr1[r_l];
-                    // arr1[r_l]=temp;
+       
+	    // for (int i = 0; i < m; i++) 
+		//     cout<<arr2[i]<<" "; 
