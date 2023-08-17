@@ -13,8 +13,8 @@ public:
         int n1 = mid - left + 1;
         int n2 = right - mid;
         
-        vector<pair<int, int>> L(n1);
-        vector<pair<int, int>> R(n2);
+        vector<pair<int,int>> L(n1);
+        vector<pair<int,int>> R(n2);
         
         for (int i = 0; i < n1; i++)
             L[i] = arr[left + i];
