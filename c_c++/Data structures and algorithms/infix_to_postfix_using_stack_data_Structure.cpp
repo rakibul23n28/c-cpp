@@ -1,8 +1,8 @@
 #include<iostream>
 #include<stack>
-std::string infix_to_postfix(std::string& infix);
-bool is_operator(char ch);
-int precedence(char op);
+std::string infix_to_postfix(const std::string& infix);
+bool is_operator(const char ch);
+int precedence(const char op);
 
 int main(){
     std::string infix,postfix;
@@ -16,7 +16,7 @@ int main(){
     return 0;
 }
 
-std::string infix_to_postfix(std::string& infix){
+std::string infix_to_postfix(const std::string& infix){
     std::stack<char> stack;
     std::string postfix;
     for(int i=0;i<infix.length();i++){
@@ -60,11 +60,10 @@ std::string infix_to_postfix(std::string& infix){
     
     return postfix;
 }
-bool is_operator(char ch){
-    if(ch=='+'||ch=='-'||ch=='*'||ch=='/'||ch=='^') return 1;
-    else return 0;
+bool is_operator(const char ch){
+    return (ch=='+'||ch=='-'||ch=='*'||ch=='/'||ch=='^');
 }
-int precedence(char op) {
+int precedence(const char op) {
     if (op == '+' || op == '-')
         return 1;
     if (op == '*' || op == '/')
