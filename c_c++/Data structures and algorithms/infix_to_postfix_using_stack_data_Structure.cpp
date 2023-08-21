@@ -23,13 +23,13 @@ std::string infix_to_postfix(const std::string& infix){
         if((infix[i]>='a'&&infix[i]<='z')||(infix[i]>='A'&&infix[i]<='Z'))  postfix+=infix[i];
         else if(infix[i]=='(') stack.push(infix[i]);
         else if(infix[i]==')'){
-            while (stack.top()!='('&& (!stack.empty()))
+            while ((!stack.empty()) && stack.top()!='(')
             {
                 char temp=stack.top();
                 postfix+=temp;
                 stack.pop();
             }
-            stack.pop();
+            if(stack.top()=='(') stack.pop();
         }
         else if(is_operator(infix[i])){
             if(stack.empty()) stack.push(infix[i]);
