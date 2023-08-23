@@ -21,7 +21,7 @@ struct Members
    char username[100];
    long long unique_id;
    int borrow_books;
-   int taken_books;
+   int total_book_borrowed;
    bool admin_or_not;
 };
 //landing page
@@ -40,11 +40,11 @@ void saveBooksToFile();
 void loadBooksDetailsFromFile();
 void add_new_book();
 //student page
-void student_page(struct Members student);
+void student_page(struct Members *student);
 void view_profile(struct Members student);
 void available_books();
-void borrow_book(struct Members student);
-void return_book(struct Members student);
+void borrow_book(struct Members *student);
+void return_book(struct Members *student);
 
 
 int main(){
@@ -127,7 +127,7 @@ void admin_page(struct Members members[], int *member_no) {
         }
     } while(admin_choice!=8);
 }
-void student_page(struct Members student){
+void student_page(struct Members *student){
     int student_choice;
     do {
         student_choice=5;
@@ -143,7 +143,7 @@ void student_page(struct Members student){
         switch(student_choice) {
             case 1:
                 system("cls");
-                view_profile(student);
+                view_profile(*student);
                 break;
             case 2:
                 borrow_book(student);
@@ -161,7 +161,7 @@ void student_page(struct Members student){
             default:
                 printf("Invalid choice. Please select a valid option.\n");
         }
-    } while(student_choice != 5);
+    } while(student_choice!=5);
 }
 
 
@@ -187,7 +187,7 @@ void registerMember(struct Members members[], int *member_no){
     }
 }
 
-void login(struct Members members[], int *member_no) {
+void login(struct Members members[],int *member_no) {
     long long id;
     printf("Enter your Unique ID: ");
     scanf("%lld", &id);
@@ -196,7 +196,6 @@ void login(struct Members members[], int *member_no) {
         if(members[i].unique_id==id){
             if(members[i].admin_or_not){
                 found=true;
-
                 int choise;
                 do
                 {
@@ -216,26 +215,25 @@ void login(struct Members members[], int *member_no) {
                     case 2:
                         system("cls");
                         printf("Student login successful\n");
-                        student_page(members[i]);
+                        student_page(&members[i]);
                         choise=3;
                         break;
                     case 3:
                         system("cls");
                         printf("3. Back in landing page\n");
                         break;
-                        
                     default:
                         printf("Invalid choice. Please select a valid option.\n");
                     }
 
                     
-                } while (choise!=3);
+                } while(choise!=3);
                 break;
             }
             else{
                 system("cls");
                 printf("Student login successful\n");
-                student_page(members[i]);
+                student_page(&members[i]);
             }
             break;
         }
@@ -245,25 +243,25 @@ void login(struct Members members[], int *member_no) {
     }
 }
 
-void saveRegisterMemberinFILE(struct Members members[], int member_no) {
+void saveRegisterMemberinFILE(struct Members members[], int member_no){
     FILE *file=fopen("members.txt","w");
     if(file==NULL){
         printf("ERROR opening file.\n");
         return;
     }
     for(int i=0;i<member_no;i++){
-        fprintf(file, "%s,%lld,%hhd,%d,%d\n",members[i].username,members[i].unique_id,members[i].admin_or_not ? 1 : 0,members[i].borrow_books,members[i].taken_books);
+        fprintf(file, "%s,%lld,%hhd,%d,%d\n",members[i].username,members[i].unique_id,members[i].admin_or_not ? 1 : 0,members[i].borrow_books,members[i].total_book_borrowed);
     }
     fclose(file);
     printf("Member information saved to members.txt\n");
 }
-void saveBooksToFile() {
+void saveBooksToFile(){
     FILE *file=fopen("books.txt","w");
-    if (file==NULL) {
+    if(file==NULL){
         printf("ERROR opening book file for writing.\n");
         return;
     }
-    for (int i=0;i<total_books;i++) {
+    for(int i=0;i<total_books;i++){
         fprintf(file, "%s,%s,%d\n",books[i].books_name,books[i].author_name,books[i].unique_token);
     }
 
@@ -272,14 +270,14 @@ void saveBooksToFile() {
 }
 
 
-void loadMembersFromFile(struct Members members[],int *member_no) {
+void loadMembersFromFile(struct Members members[],int *member_no){
     FILE *file=fopen("members.txt", "r");
     if (file==NULL){
         printf("ERROR opening file for reading.\n");
         return;
     }
     *member_no=0;
-    while (*member_no<MAX_MEMBERS && fscanf(file, " %[^,],%lld,%hhd,%d,%d\n",members[*member_no].username,&members[*member_no].unique_id,&members[*member_no].admin_or_not,&members[*member_no].borrow_books,&members[*member_no].taken_books) == 5){
+    while(*member_no<MAX_MEMBERS && fscanf(file, " %[^,],%lld,%hhd,%d,%d\n",members[*member_no].username,&members[*member_no].unique_id,&members[*member_no].admin_or_not,&members[*member_no].borrow_books,&members[*member_no].total_book_borrowed) == 5){
         if (is_unique(members,members[*member_no].unique_id,*member_no)&& (members[*member_no].borrow_books==1 || members[*member_no].borrow_books==0)){
             (*member_no)++;
         }
@@ -306,9 +304,6 @@ void loadBooksDetailsFromFile(){
     printf("Book information loaded...\n");
 }
 
-
-
-
 bool is_unique(struct Members members[],long long id,int member_no){
     for (int i = 0; i < member_no; i++)
     {
@@ -328,8 +323,8 @@ void show_student_details(struct Members members[],int member_no){
     }
     for(int i=0;i<member_no;i++){
         if (!members[i].admin_or_not){
-            fprintf(file, "Username: %s\nID: %lld\nStatus: Student\nBorrowed Books: %d\nTaken Books: %d\n\n\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].taken_books);
-            printf("Username: %s\nID: %lld\nStatus: Student\nBorrowed Books: %d\nTaken Books: %d\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].taken_books);
+            fprintf(file, "Username: %s\nID: %lld\nStatus: Student\nBorrowed Books: %d\nTotal book borrowed: %d\n\n\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].total_book_borrowed);
+            printf("Username: %s\nID: %lld\nStatus: Student\nBorrowed Books: %d\nTotal book borrowed: %d\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].total_book_borrowed);
             printf("____________________________________________________________________________\n\n");
         }
     }
@@ -344,8 +339,8 @@ void show_admin_details(struct Members members[],int member_no) {
     }
     for (int i=0;i<member_no;i++) {
         if (members[i].admin_or_not) {
-            fprintf(file, "Username: %s\nID: %lld\nStatus: Admin\nBorrowed Books: %d\nTaken Books: %d\n\n\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].taken_books);
-            printf("Username: %s\nID: %lld\nStatus: Student\nBorrowed Books: %d\nTaken Books: %d\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].taken_books);
+            fprintf(file, "Username: %s\nID: %lld\nStatus: Admin\nBorrowed Books: %d\nTotal book borrowed: %d\n\n\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].total_book_borrowed);
+            printf("Username: %s\nID: %lld\nStatus: Student\nBorrowed Books: %d\nTotal book borrowed: %d\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].total_book_borrowed);
             printf("____________________________________________________________________________\n\n");
 
         }
@@ -395,7 +390,11 @@ void view_profile(struct Members student) {
     printf("ID: %lld\n",student.unique_id);
     printf("Status: %s\n",student.admin_or_not?"Admin":"Student");
     printf("Borrowed Books: %d\n",student.borrow_books);
-    printf("Taken Books: %d\n",student.taken_books);
+    printf("Total book borrowed: %d\n",student.total_book_borrowed);
+
+    if (student.borrow_books>=1) {
+         printf("You have already borrowed a book. Please return it!.\n");
+    }
 }
 
 void available_books() {
@@ -413,8 +412,8 @@ void available_books() {
         }
     }
 }
-void borrow_book(struct Members student) {
-    if(student.borrow_books>=1){
+void borrow_book(struct Members *student) {
+    if((*student).borrow_books>=1){
         printf("You have already borrowed a book. Please return it before borrowing a new one.\n");
         return;
     }
@@ -424,27 +423,31 @@ void borrow_book(struct Members student) {
     scanf("%d", &book_choice);
     if (book_choice>=1 && book_choice<=total_books) {
         printf("You have borrowed the book:\n");
-        printf("Title: %s\n",books[book_choice].books_name);
-        printf("Author: %s\n",books[book_choice].author_name);
-        printf("Unique Token: %d\n",books[book_choice].unique_token);
-        student.borrow_books++;
-        student.taken_books++;
+        printf("Title: %s\n",books[book_choice-1].books_name);
+        printf("Author: %s\n",books[book_choice-1].author_name);
+        printf("Unique Token: %d\n",books[book_choice-1].unique_token);
+        (*student).borrow_books++;
+        (*student).total_book_borrowed++;
         printf("Book borrowed successfully!\n");
     }
     else{
         printf("Invalid book choice. Please select a valid book number.\n");
     }
 }
-
-void return_book(struct Members student) {
-    if(student.borrow_books==0){
+void return_book(struct Members *student) {
+    if ((*student).borrow_books==0) {
         printf("You haven't borrowed any books to return.\n");
         return;
     }
-    printf("You have borrowed the following book:\n");
-    printf("Title: %s\n", books[student.taken_books].books_name);
-    printf("Author: %s\n", books[student.taken_books].author_name);
-    printf("Unique Token: %d\n", books[student.taken_books].unique_token);
-    student.borrow_books--;
-    printf("Book returned successfully!\n");
+    printf("Are you sure you want to return this book? (1 for Yes, 0 for No): ");
+    int choice;
+    scanf("%d", &choice);
+    if (choice==1) {
+        (*student).borrow_books=0;
+        printf("Book returned successfully!\n");
+    }
+    else{
+        printf("Book return cancelled.\n");
+    }
 }
+
