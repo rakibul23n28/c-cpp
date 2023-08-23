@@ -1,4 +1,4 @@
-rakibul hasan,10,1
-rakibul,1010,0
-emon,99,1
-hridoy,100,0
+rakibul hasan,10,1,1,10
+rakibul,1010,0,1,6
+emon,99,1,0,9
+hridoy,100,0,0,8

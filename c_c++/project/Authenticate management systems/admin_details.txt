@@ -1,6 +1,14 @@
 Username: rakibul hasan
 ID: 10
-Status: Admin
+Status: Student
+Borrowed Books: 5
+Taken Books: 10
+
+
 Username: emon
 ID: 99
-Status: Admin
+Status: Student
+Borrowed Books: 2
+Taken Books: 9
+
+

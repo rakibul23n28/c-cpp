@@ -1,6 +1,14 @@
 Username: rakibul
 ID: 1010
 Status: Student
+Borrowed Books: 4
+Taken Books: 6
+
+
 Username: hridoy
 ID: 100
 Status: Student
+Borrowed Books: 5
+Taken Books: 8
+
+
