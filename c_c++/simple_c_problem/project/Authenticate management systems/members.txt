@@ -1,0 +1,4 @@
+rakibul hasan,10,1
+rakibul,1010,0
+emon,99,1
+hridoy,100,0
