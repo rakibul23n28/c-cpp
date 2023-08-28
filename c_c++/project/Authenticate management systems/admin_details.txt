@@ -1,12 +1,5 @@
 Username: rakibul hasan
-ID: 10
-Status: Admin
-Borrowed Books: 4
-Total book borrowed: 11
-
-
-Username: emon
-ID: 99
+ID: 10101
 Status: Admin
 Borrowed Books: 0
 Total book borrowed: 9

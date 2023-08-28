@@ -194,6 +194,11 @@ void registerMember(){
             members[member_no].unique_id=id;
             strcpy(members[member_no].username,name);
             members[member_no].admin_or_not=false;
+            //
+            FILE *file=fopen("members.txt","a");
+                fprintf(file, "%s,%lld,%hhd,%d,%d\n",members[member_no].username,members[member_no].unique_id,members[member_no].admin_or_not ? 1 : 0,members[member_no].borrow_books,members[member_no].total_book_borrowed);
+            fclose(file);
+            //
             (member_no)++;
             return;
         }
@@ -354,7 +359,7 @@ void show_admin_details() {
     for (int i=0;i<member_no;i++) {
         if (members[i].admin_or_not) {
             fprintf(file, "Username: %s\nID: %lld\nStatus: Admin\nBorrowed Books: %d\nTotal book borrowed: %d\n\n\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].total_book_borrowed);
-            printf("Username: %s\nID: %lld\nStatus: Student\nBorrowed Books: %d\nTotal book borrowed: %d\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].total_book_borrowed);
+            printf("Username: %s\nID: %lld\nStatus: Admin\nBorrowed Books: %d\nTotal book borrowed: %d\n",members[i].username,members[i].unique_id,members[i].borrow_books,members[i].total_book_borrowed);
             printf("____________________________________________________________________________\n\n");
 
         }
@@ -390,6 +395,11 @@ void add_new_book() {
         printf("Author: ");
         scanf(" %[^\n]", books[total_books].author_name);
         books[total_books].unique_token=total_books;
+        //
+         FILE *file=fopen("books.txt","a");
+        fprintf(file, "%s,%s,%d\n",books[total_books].books_name,books[total_books].author_name,books[total_books].unique_token);
+        fclose(file);
+        //
         total_books++;
         printf("New book added successfully!\n");
     } else {
