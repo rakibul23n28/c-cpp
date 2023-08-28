@@ -1,7 +1,0 @@
-,,0
-math,gg ton,1
-math,gg ton,2
-math,gg ton,3
-math,gg ton,4
-english,dddd,5
-kkkk,vvvvv,6
