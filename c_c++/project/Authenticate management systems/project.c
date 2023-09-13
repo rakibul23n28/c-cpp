@@ -55,7 +55,7 @@ int main(){
     int choice;
     do
     {
-        choice=4;
+        choice=3;
         printf("Menu:\n");
         printf("1. Register\n");
         printf("2. Login\n");
@@ -76,7 +76,7 @@ int main(){
             default:
                 printf("Invalid choice. Please select a valid option.\n");
         }
-    }while(choice!=4);
+    }while(choice!=3);
 }
 //admin page after authentication
 
@@ -218,8 +218,9 @@ void login() {
     bool found=false;
     for(int i=0;i<member_no;i++){
         if(members[i].unique_id==id){
+             found=true;
             if(members[i].admin_or_not){
-                found=true;
+                
                 int choise;
                 do
                 {
