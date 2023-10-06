@@ -2,12 +2,11 @@
 class TreeNode{
     private:
         int data;
-        int key;
         TreeNode *left;
         TreeNode *right;
     public:
-        TreeNode():data(0),key(0),left(nullptr),right(nullptr){}
-        TreeNode(int d,int k):data(d),key(k),left(nullptr),right(nullptr){}
+        TreeNode():data(0),left(nullptr),right(nullptr){}
+        TreeNode(int d):data(d),left(nullptr),right(nullptr){}
 
         friend class BinarySearchTree;
 };
@@ -28,12 +27,25 @@ class BinarySearchTree{
             TreeNode* temp=root;
 
             while(temp != nullptr){
-                if(temp->key == key) return temp;
-                else if((temp->key > key)) temp=temp->left;
+                if(temp->data == key) return temp;
+                else if((temp->data > key)) temp=temp->left;
                 else temp=temp->right;
             }
 
             return nullptr;
+        }
+
+        void insertNode(TreeNode* &currentNode, TreeNode* newNode){
+            if(currentNode == nullptr){
+                currentNode=newNode;
+                return;
+            }
+            if(currentNode->data > newNode->data)
+                insertNode(currentNode->left,newNode);
+            else if(currentNode->data < newNode->data)
+                insertNode(currentNode->right,newNode);
+            else
+                std::cout << "This data already exists, try again" << std::endl;
         }
         void insertNode(TreeNode* newNode){
             if(root == nullptr){
@@ -41,8 +53,8 @@ class BinarySearchTree{
                  return;
             }
             else{
-                if(nodeExist(newNode->key)){
-                    std::cout<<"This key already exist, try again"<<std::endl;
+                if(nodeExist(newNode->data)){
+                    std::cout<<"This data already exist, try again"<<std::endl;
                     return;
                 }
                 TreeNode* temp = root;
@@ -50,6 +62,7 @@ class BinarySearchTree{
                     if (newNode->data < temp->data) {
                         if (temp->left == nullptr) {
                             temp->left = newNode;
+                            std::cout<<"Value Inserted to the Left"<<std::endl;
                             return;
                         } else {
                             temp = temp->left;
@@ -57,6 +70,7 @@ class BinarySearchTree{
                     } else {
                         if (temp->right == nullptr) {
                             temp->right = newNode;
+                            std::cout<<"Value Inserted to the Right"<<std::endl;
                             return;
                         } else {
                             temp = temp->right;
@@ -64,13 +78,14 @@ class BinarySearchTree{
                     }
                 }
             }
+            // insertNode(root,newNode);
         }
 };
 
 
 int main(){
     BinarySearchTree BST;
-    int choice,data,key;
+    int choice,data;
     do {
         std::cout<<"What operation do you want to perform?"<<std::endl;
         std::cout<<"0: For Exit The Code"<<std::endl;
@@ -88,9 +103,9 @@ int main(){
 
         case 1:
             std::cout<<"Insert"<<std::endl;
-            std::cout<<"Enter  data and key For Insertion"<<std::endl;
-            std::cin>>data>>key;
-            BST.insertNode(new TreeNode(data,key));
+            std::cout<<"Enter VALUE of Tree Node to INSERT in BST: ";
+            std::cin>>data;
+            BST.insertNode(new TreeNode(data));
             break;
         case 2:
             std::cout<<"Search"<<std::endl;
