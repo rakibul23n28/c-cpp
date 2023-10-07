@@ -30,21 +30,21 @@ class BinarySearchTree{
         }
         void printPreorderHelper(TreeNode* node){
             if(node == nullptr) return;
-            std::cout << node->data << " -->";
+            std::cout << node->data << " --> ";
             printPreorderHelper(node->left);
             printPreorderHelper(node->right);
         }
         void printInorderHelper(TreeNode* node){
             if(node == nullptr) return;
             printInorderHelper(node->left);
-            std::cout<<node->data<<" -->";
+            std::cout<<node->data<<" --> ";
             printInorderHelper(node->right);
         }
         void printPostorderHelper(TreeNode* node){
             if(node == nullptr) return;
             printPostorderHelper(node->left);
             printPostorderHelper(node->right);
-            std::cout<<node->data<<" -->";
+            std::cout<<node->data<<" --> ";
         }
         void print2DHelper(TreeNode* node, int space){
             if(node == nullptr) return;
@@ -56,13 +56,61 @@ class BinarySearchTree{
             print2DHelper(node->left, space);
 
         }
+        void printLevelorderHelper(TreeNode* node,int level){
+            if(node == nullptr) return;
+            else if(level == 0) {
+                std::cout<<node->data<<" --> ";
+            }
+            else{
+                printLevelorderHelper(node->left,level-1);
+                printLevelorderHelper(node->right,level-1);
+            }
+        }
+       
         int heightTreeHelper(TreeNode* node){
             if(node == nullptr) return -1;
             int leftHeight=heightTreeHelper(node->left);
             int rightHeight=heightTreeHelper(node->right);
             return std::max(leftHeight,rightHeight)+1;
         }
+        TreeNode* deleteNodeHelper(TreeNode* node,int data){
+            if(node == nullptr) return node;
+            else if(node->data > data){
+                node->left = deleteNodeHelper(node->left,data);
+                return node;
+            }
+            else if(node->data < data){
+                node->right = deleteNodeHelper(node->right,data);
+                return node;
+            }
+            else{
+                if(node->left == nullptr){
+                    TreeNode* temp=node->right;
+                    delete node;
+                    return temp;
+                }
+                else if(node->right == nullptr){
+                    TreeNode* temp=node->left;
+                    delete node;
+                    return temp;
+                }
+                else{
+                    TreeNode* temp=minNode(node->right);
+                    node->data=temp->data;
+                    node->right=deleteNodeHelper(node->right,temp->data);
+                }
+            }
+            return node;
+        }
+        TreeNode* minNode(TreeNode* node){
+            TreeNode *temp=node;
+            while(temp->left != nullptr){
+                temp=temp->left;
+            }
+            return temp;
+        }
     public:
+
         BinarySearchTree():root(nullptr){}
         BinarySearchTree(TreeNode* newNode):root(newNode){}
 
@@ -158,6 +206,19 @@ class BinarySearchTree{
         int heightTree(){
             return heightTreeHelper(root);
         }
+         void printLevelOrderBFS(){
+            std::cout << "Level-order traversal(Breadth First Search):" << std::endl;
+            int heightTree=heightTreeHelper(root);
+            for (int i=0;i<=heightTree;i++){
+                printLevelorderHelper(root,i);
+            }
+            std::cout<<std::endl;
+
+         }
+         TreeNode* deleteNode(int data){
+            return deleteNodeHelper(root,data);
+         }
+
 };
 
 
@@ -165,6 +226,7 @@ int main(){
     BinarySearchTree BST;
     int choice,data;
     do {
+        choice = 0;
         std::cout<<"What operation do you want to perform?"<<std::endl;
         std::cout<<"0: For Exit The Code"<<std::endl;
         std::cout<<"1: Insert Node"<<std::endl;
@@ -199,6 +261,14 @@ int main(){
             break;
         case 3:
             std::cout<<"Delete"<<std::endl;
+            std::cout<<"Enter VALUE of Tree Node to DELETE in BST: ";
+            std::cin>>data;
+            if(BST.deleteNode(data)){
+                std::cout << "Data " << data << " deleted from the tree." << std::endl;
+            }
+            else{
+                std::cout << "Data " << data << " is not found in the tree." << std::endl;
+            }
             break;
         case 4:
             std::cout<<"Print and TRAVERSE BST"<<std::endl;
@@ -206,6 +276,7 @@ int main(){
             BST.printInorder();
             BST.printPostorder();
             BST.print2D();
+            BST.printLevelOrderBFS();
             break;
         case 5:
             std::cout<<"Height of This Tree"<<std::endl;
