@@ -15,18 +15,65 @@ class TreeNode{
 class BinarySearchTree{
     private:
         TreeNode* root;
+        int getBalanceFactor(TreeNode* node){
+            if(node == nullptr) return -1;
+            return (heightTreeHelper(node->left) - heightTreeHelper(node->right));
+        }
+        TreeNode* rightRotate(TreeNode* node){
+            TreeNode* returnNode=node->left;
+            TreeNode* extraNode=returnNode->right;
 
+            //change
+            returnNode->right=node;
+            node->left=extraNode;
+
+            return returnNode;
+
+        }
+        TreeNode* leftRotate(TreeNode* node){
+            TreeNode* returnNode=node->right;
+            TreeNode* extraNode=returnNode->left;
+
+            //change
+            returnNode->left=node;
+            node->right=extraNode;
+
+            return returnNode;
+
+        }
         void insertNodeHelper(TreeNode* &currentNode, TreeNode* newNode){
             if(currentNode == nullptr){
                 currentNode = newNode;
                 return;
             }
-            if(currentNode->data > newNode->data)
+            if(currentNode->data > newNode->data){
                 insertNodeHelper(currentNode->left, newNode);
-            else if(currentNode->data < newNode->data)
+            }
+            else if(currentNode->data < newNode->data){
                 insertNodeHelper(currentNode->right, newNode);
-            else
+            }
+            else{
                 std::cout << "This data already exists, try again" << std::endl;
+            }
+            //bf means Baalance factor
+            int bf=getBalanceFactor(currentNode);
+            if(bf > 1){
+                if(currentNode->left->data > newNode->data){
+                    currentNode = rightRotate(currentNode);
+                }else{
+                    currentNode->left=leftRotate(currentNode->left);
+                    currentNode=rightRotate(currentNode);
+                }
+            }else if(bf < -1){
+                if(currentNode->right->data < newNode->data){
+                    currentNode=leftRotate(currentNode);
+                }else{
+                    currentNode->right=rightRotate(currentNode->right);
+                    currentNode=leftRotate(currentNode);
+                }
+
+            }
+
         }
         void printPreorderHelper(TreeNode* node){
             if(node == nullptr) return;
@@ -73,15 +120,13 @@ class BinarySearchTree{
             int rightHeight=heightTreeHelper(node->right);
             return std::max(leftHeight,rightHeight)+1;
         }
-        TreeNode* deleteNodeHelper(TreeNode* node,int data){
+        TreeNode* deleteNodeHelper(TreeNode* &node,int data){
             if(node == nullptr) return node;
             else if(node->data > data){
                 node->left = deleteNodeHelper(node->left,data);
-                return node;
             }
             else if(node->data < data){
                 node->right = deleteNodeHelper(node->right,data);
-                return node;
             }
             else{
                 if(node->left == nullptr){
@@ -100,7 +145,26 @@ class BinarySearchTree{
                     node->right=deleteNodeHelper(node->right,temp->data);
                 }
             }
+
+            int bf=getBalanceFactor(node);
+            if(bf == 2){
+                if(getBalanceFactor(node->left) >= 0){
+                    node = rightRotate(node);
+                }else if(getBalanceFactor(node->left) == -1){
+                    node->left=leftRotate(node->left);
+                    node=rightRotate(node);
+                }
+            }else if(bf == -2 ){
+                if(getBalanceFactor(node->right) <= 0){
+                    node=leftRotate(node);
+                }else if(getBalanceFactor(node->right) ==1){
+                    node->right=rightRotate(node->right);
+                    node=leftRotate(node);
+                }
+
+            }
             return node;
+
         }
         TreeNode* minNode(TreeNode* node){
             TreeNode *temp=node;
@@ -136,37 +200,37 @@ class BinarySearchTree{
         }
 
         void insertNode(TreeNode* newNode){
-            if(root == nullptr){
-                 root=newNode;
-                 return;
-            }
-            else{
-                if(nodeExist(newNode->data)){
-                    std::cout<<"This data already exist, try again"<<std::endl;
-                    return;
-                }
-                TreeNode* temp = root;
-                 while (temp != nullptr) {
-                    if (newNode->data < temp->data) {
-                        if (temp->left == nullptr) {
-                            temp->left = newNode;
-                            std::cout<<"Value Inserted to the Left"<<std::endl;
-                            return;
-                        } else {
-                            temp = temp->left;
-                        }
-                    } else {
-                        if (temp->right == nullptr) {
-                            temp->right = newNode;
-                            std::cout<<"Value Inserted to the Right"<<std::endl;
-                            return;
-                        } else {
-                            temp = temp->right;
-                        }
-                    }
-                }
-            }
-            // insertNodeHelper(root,newNode);
+            // if(root == nullptr){
+            //      root=newNode;
+            //      return;
+            // }
+            // else{
+            //     if(nodeExist(newNode->data)){
+            //         std::cout<<"This data already exist, try again"<<std::endl;
+            //         return;
+            //     }
+            //     TreeNode* temp = root;
+            //      while (temp != nullptr) {
+            //         if (newNode->data < temp->data) {
+            //             if (temp->left == nullptr) {
+            //                 temp->left = newNode;
+            //                 std::cout<<"Value Inserted to the Left"<<std::endl;
+            //                 return;
+            //             } else {
+            //                 temp = temp->left;
+            //             }
+            //         } else {
+            //             if (temp->right == nullptr) {
+            //                 temp->right = newNode;
+            //                 std::cout<<"Value Inserted to the Right"<<std::endl;
+            //                 return;
+            //             } else {
+            //                 temp = temp->right;
+            //             }
+            //         }
+            //     }
+            // }
+            insertNodeHelper(root,newNode);
         }
         void printPreorder(){
             std::cout << "Pre-order traversal:" << std::endl;
